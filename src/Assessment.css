@@ -1,0 +1,273 @@
+
+.assessment-page {
+  min-height: 100vh;
+  background: #f7f8fc;
+  color: #20233a;
+}
+
+.assessment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 8%;
+  background: white;
+  border-bottom: 1px solid #e9eaf1;
+}
+
+.assessment-header h2 {
+  font-size: 23px;
+}
+
+.assessment-header h2 span {
+  color: #7865e9;
+}
+
+.assessment-header a {
+  text-decoration: none;
+  color: #7865e9;
+  font-weight: 600;
+}
+
+.assessment-container {
+  max-width: 850px;
+  margin: 50px auto;
+  padding: 0 20px;
+}
+
+.assessment-heading {
+  text-align: center;
+  margin-bottom: 35px;
+}
+
+.assessment-heading span {
+  color: #7865e9;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.assessment-heading h1 {
+  font-size: 36px;
+  margin: 15px 0;
+}
+
+.assessment-heading p,
+.form-section p {
+  color: #74778b;
+  line-height: 1.7;
+}
+
+.form-section {
+  background: white;
+  padding: 28px;
+  margin-bottom: 22px;
+  border-radius: 14px;
+  border: 1px solid #e9eaf1;
+}
+
+.form-section h2 {
+  font-size: 20px;
+  margin-bottom: 22px;
+}
+
+.form-section > label {
+  display: block;
+  font-weight: 600;
+  margin: 18px 0 9px;
+}
+
+.form-section input[type="text"],
+.form-section select {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #dedfea;
+  border-radius: 8px;
+  font-size: 15px;
+  background: white;
+  color: #20233a;
+}
+
+.selection-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 13px;
+  margin-top: 20px;
+}
+
+.selection-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid #e4e4ef;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.selection-option input {
+  accent-color: #7865e9;
+  width: 17px;
+  height: 17px;
+}
+
+.assessment-submit {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: #7865e9;
+  color: white;
+  border: none;
+  border-radius: 9px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 25px 0 50px;
+}
+
+.assessment-submit:hover {
+  background: #6250ce;
+}
+
+@media (max-width: 600px) {
+  .assessment-heading h1 {
+    font-size: 27px;
+  }
+
+  .selection-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-section {
+    padding: 20px;
+  }
+}
+
+.results-list {
+  display: grid;
+  gap: 22px;
+}
+
+.result-card {
+  background: white;
+  padding: 28px;
+  border: 1px solid #e4e4ef;
+  border-radius: 14px;
+}
+
+.result-rank {
+  color: #7865e9;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.result-card h2 {
+  margin: 15px 0;
+  font-size: 23px;
+}
+
+.result-card p {
+  color: #74778b;
+  line-height: 1.7;
+}
+
+.result-card h4 {
+  margin: 20px 0 5px;
+}
+
+.match-score {
+  margin-top: 22px;
+}
+
+.match-score strong {
+  color: #7865e9;
+}
+
+.score-track {
+  height: 10px;
+  background: #e9e7f7;
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.score-fill {
+  height: 100%;
+  background: #7865e9;
+  border-radius: 10px;
+  transition: width 0.5s ease;
+}
+
+.preference-match {
+  display: inline-block;
+  margin-top: 15px;
+  color: #16834b;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.roadmap-button {
+  display: block;
+  margin-top: 22px;
+  padding: 13px 22px;
+  border: none;
+  border-radius: 9px;
+  background: #7865e9;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.roadmap-button:hover {
+  background: #6250d0;
+  transform: translateY(-2px);
+}
+
+.roadmap-stages {
+  display: grid;
+  gap: 20px;
+}
+
+.roadmap-stage {
+  background: white;
+  padding: 28px;
+  border: 1px solid #e4e4ef;
+  border-radius: 14px;
+}
+
+.stage-number {
+  color: #7865e9;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.stage-duration {
+  color: #7865e9;
+  font-weight: 600;
+}
+
+.roadmap-stage h4 {
+  margin-top: 22px;
+  margin-bottom: 10px;
+}
+
+.roadmap-stage li {
+  color: #74778b;
+  margin: 9px 0;
+}
+
+.roadmap-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.roadmap-tags span {
+  padding: 8px 14px;
+  background: #eeeaff;
+  color: #6250d0;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
