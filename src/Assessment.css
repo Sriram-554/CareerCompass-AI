@@ -22,10 +22,20 @@
   color: #7865e9;
 }
 
-.assessment-header a {
+.assessment-header a,
+.header-link {
   text-decoration: none;
   color: #7865e9;
   font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 0;
+}
+
+.header-link:hover {
+  text-decoration: underline;
 }
 
 .assessment-container {
@@ -85,6 +95,28 @@
   font-size: 15px;
   background: white;
   color: #20233a;
+}
+
+.form-section input[aria-invalid="true"],
+.form-section select[aria-invalid="true"] {
+  border-color: #e11d48;
+}
+
+.field-error {
+  color: #e11d48;
+  font-size: 13px;
+  margin: 8px 0 0;
+  font-weight: 500;
+}
+
+.form-error-banner {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  color: #be123c;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 22px;
+  font-size: 14px;
 }
 
 .selection-grid {
@@ -257,6 +289,25 @@
   margin: 9px 0;
 }
 
+.topic-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.topic-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.topic-item input {
+  accent-color: #7865e9;
+  width: 16px;
+  height: 16px;
+}
+
 .roadmap-tags {
   display: flex;
   flex-wrap: wrap;
@@ -270,4 +321,42 @@
   border-radius: 20px;
   font-size: 13px;
   font-weight: 600;
+}
+
+/* Progress card (roadmap view) */
+.progress-card {
+  background: white;
+  border: 1px solid #e4e4ef;
+  border-radius: 14px;
+  padding: 22px;
+  margin: 25px 0;
+  text-align: left;
+}
+
+.progress-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  color: #6250d0;
+}
+
+.progress-track {
+  width: 100%;
+  height: 12px;
+  background: #e9e6f5;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #7865e9;
+  border-radius: 20px;
+  transition: width 0.3s ease;
+}
+
+.progress-card p {
+  margin-top: 12px;
+  color: #74778b;
+  font-size: 14px;
 }

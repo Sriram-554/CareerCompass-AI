@@ -29,7 +29,7 @@ function App() {
   const [showAssessment, setShowAssessment] = useState(false)
 
   if (showAssessment) {
-    return <Assessment />
+    return <Assessment onBack={() => setShowAssessment(false)} />
   }
 
   return (
@@ -37,7 +37,7 @@ function App() {
 
       {/* Navigation */}
       <nav className="navbar">
-        <a href="#" className="logo">
+        <a href="#" className="logo" onClick={(e) => e.preventDefault()}>
           <span className="logo-icon">✦</span>
           CareerCompass<span className="ai">AI</span>
         </a>
@@ -48,9 +48,13 @@ function App() {
           <a href="#how-it-works">How it works</a>
         </div>
 
-        <a href="#assessment" className="nav-button">
+        <button
+          type="button"
+          className="nav-button"
+          onClick={() => setShowAssessment(true)}
+        >
           Get Started <span>→</span>
-        </a>
+        </button>
       </nav>
 
       {/* Hero Section */}
@@ -75,9 +79,13 @@ function App() {
             </p>
 
             <div className="hero-actions">
-              <a href="#assessment" className="primary-button">
+              <button
+                type="button"
+                className="primary-button"
+                onClick={() => setShowAssessment(true)}
+              >
                 Discover Your Career <span>→</span>
-              </a>
+              </button>
               <a href="#how-it-works" className="secondary-button">
                 Explore How It Works
               </a>
@@ -185,10 +193,10 @@ function App() {
               your interests, strengths and ambitions.
             </p>
             <button
-  className="primary-button"
-  onClick={() => setShowAssessment(true)}
->
-            
+              type="button"
+              className="primary-button"
+              onClick={() => setShowAssessment(true)}
+            >
               Start Your Assessment <span>→</span>
             </button>
           </div>
@@ -197,13 +205,13 @@ function App() {
 
       {/* Footer */}
       <footer className="footer">
-        <a
-  href="#assessment"
-  className="nav-button"
-  onClick={() => setShowAssessment(true)}
->
-  Get Started <span>→</span>
-</a>
+        <button
+          type="button"
+          className="nav-button"
+          onClick={() => setShowAssessment(true)}
+        >
+          Get Started <span>→</span>
+        </button>
         <p>Helping students turn their potential into possibilities.</p>
         <span>© 2026 CareerCompass AI. All rights reserved.</span>
       </footer>

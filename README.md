@@ -1,16 +1,72 @@
-# React + Vite
+# CareerCompass AI
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A student-focused career guidance platform that helps you discover career paths aligned with your skills and interests, then gives you a practical learning roadmap to get there.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Career Assessment** — Share your education, skills, interests, and preferences
+- **Smart Recommendations** — Ranked career matches with transparent match scores
+- **Personalized Roadmaps** — Stage-by-stage learning paths with topics, tools, and projects
+- **Progress Tracking** — Mark topics complete; progress is saved in your browser
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19 + Vite
+- Client-side recommendation engine (weighted skill / interest / preference scoring)
+- localStorage for learning progress
 
-## Expanding the Oxlint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+```bash
+npm install
+npm run dev
+```
+
+Open the URL shown in the terminal (usually `http://localhost:5173`).
+
+### Other scripts
+
+```bash
+npm run build    # production build
+npm run preview  # preview production build
+npm test         # run unit tests (Vitest)
+npm run lint     # Oxlint
+```
+
+## How It Works
+
+1. **Know yourself** — Fill in name, degree, branch, year, skills, interests, and career preference.
+2. **Discover careers** — The engine scores each career path and shows your top matches with reasons.
+3. **Build your future** — Open a learning roadmap, check off topics, and track progress over time.
+
+## Project Structure
+
+```text
+src/
+├── App.jsx                 # Landing page + assessment toggle
+├── Assessment.jsx          # Form, results, and roadmap views
+├── recommendationEngine.js # Career scoring logic
+├── roadmapData.js          # Learning paths per career
+├── App.css / Assessment.css
+└── recommendationEngine.test.js
+```
+
+## Supported Careers
+
+- Machine Learning Engineer
+- Web Developer
+- Data Analyst
+- Cybersecurity Analyst
+- Cloud Engineer
+- Mobile App Developer
+- Research Scientist
+
+## Notes
+
+- Recommendations are rule-based (not a trained ML model). Scores are designed to be explainable.
+- Progress is stored only in the browser (`localStorage`). Clearing site data resets it.
+- This is an early prototype aimed at students exploring tech careers.
+
+## License
+
+Intended for learning and portfolio use.
