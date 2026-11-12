@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
 import './Assessment.css'
-import { generateRecommendations } from './recommendationEngine'
+import {
+  generateRecommendations,
+  SKILLS_LIST,
+  INTERESTS_LIST,
+} from './recommendationEngine'
 import { getRoadmap } from './roadmapData'
 
 function Assessment({ onBack }) {
@@ -18,7 +22,6 @@ function Assessment({ onBack }) {
   const [selectedRoadmap, setSelectedRoadmap] = useState(null)
   const [roadmapMessage, setRoadmapMessage] = useState('')
 
-  // Store completed topics for different careers
   const [progressByCareer, setProgressByCareer] = useState(() => {
     try {
       const savedProgress = localStorage.getItem('careerCompassProgress')
@@ -48,7 +51,6 @@ function Assessment({ onBack }) {
     }
   })
 
-  // Save progress whenever it changes
   useEffect(() => {
     try {
       localStorage.setItem(
@@ -60,7 +62,6 @@ function Assessment({ onBack }) {
     }
   }, [progressByCareer])
 
-  // Calculate total topics in the selected career roadmap
   const totalTopics = selectedRoadmap
     ? selectedRoadmap.stages.reduce(
         (total, stage) => total + stage.topics.length,
@@ -68,7 +69,6 @@ function Assessment({ onBack }) {
       )
     : 0
 
-  // Get completed topics for the selected career
   const roadmapTopics = selectedRoadmap
     ? selectedRoadmap.stages.flatMap(stage => stage.topics)
     : []
@@ -81,26 +81,10 @@ function Assessment({ onBack }) {
     completedTopics.includes(topic)
   ).length
 
-  // Calculate completion percentage
   const progressPercentage =
     totalTopics === 0
       ? 0
       : Math.round((completedCount / totalTopics) * 100)
-
-  const skillsList = [
-    'Python', 'Java', 'C', 'C++',
-    'HTML/CSS', 'JavaScript', 'SQL',
-    'Machine Learning'
-  ]
-
-  const interestsList = [
-    'Artificial Intelligence',
-    'Web Development',
-    'Data Science',
-    'Cybersecurity',
-    'Cloud Computing',
-    'App Development'
-  ]
 
   function handleChange(event) {
     const { name, value } = event.target
@@ -306,7 +290,7 @@ function Assessment({ onBack }) {
             <span>YOUR CAREER DISCOVERY RESULTS</span>
             <h1>Hi {firstName}, here are your career matches!</h1>
             <p>
-              Based on your skills, interests and career preferences,
+              Based on your skills, interests, branch, and preferences,
               here are your recommended career paths.
             </p>
           </div>
@@ -338,25 +322,18 @@ function Assessment({ onBack }) {
                   </div>
                 </div>
 
-                <p className="match-explanation">
-                  {career.matchedSkills.length > 0 ||
-                  career.matchedInterests.length > 0 ||
-                  career.preferenceMatch
-                    ? `Your profile matches this career through ${
-                        career.matchedSkills.length
-                      } skill(s), ${
-                        career.matchedInterests.length
-                      } interest(s)${
-                        career.preferenceMatch
-                          ? ', and your career preference'
-                          : ''
-                      }.`
-                    : 'Explore this career to discover whether it interests you.'}
-                </p>
+                <p className="match-explanation">{career.whyMatch}</p>
 
                 <h4>Matching Skills</h4>
                 <p>
                   {career.matchedSkills.join(', ') || 'No direct skill matches yet'}
+                </p>
+
+                <h4>Skills to Build Next</h4>
+                <p>
+                  {career.missingSkills.length > 0
+                    ? career.missingSkills.join(', ')
+                    : 'You already cover the core skills for this path.'}
                 </p>
 
                 <h4>Matching Interests</h4>
@@ -508,7 +485,7 @@ function Assessment({ onBack }) {
             <p>Select all the skills you currently know.</p>
 
             <div className="selection-grid">
-              {skillsList.map(skill => (
+              {SKILLS_LIST.map(skill => (
                 <label className="selection-option" key={skill}>
                   <input
                     type="checkbox"
@@ -534,7 +511,7 @@ function Assessment({ onBack }) {
             <p>Select the fields you are interested in exploring.</p>
 
             <div className="selection-grid">
-              {interestsList.map(interest => (
+              {INTERESTS_LIST.map(interest => (
                 <label className="selection-option" key={interest}>
                   <input
                     type="checkbox"
