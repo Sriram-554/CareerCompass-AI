@@ -18,17 +18,54 @@ function Assessment() {
   const [selectedRoadmap, setSelectedRoadmap] = useState(null)
   // Store completed topics for different careers
 const [progressByCareer, setProgressByCareer] = useState(() => {
-  const savedProgress = localStorage.getItem('careerCompassProgress')
+  try {
+    const savedProgress = localStorage.getItem('careerCompassProgress')
 
-  return savedProgress ? JSON.parse(savedProgress) : {}
+    if (!savedProgress) return {}
+
+    const parsedProgress = JSON.parse(savedProgress)
+
+    if (
+      !parsedProgress ||
+      typeof parsedProgress !== 'object' ||
+      Array.isArray(parsedProgress)
+    ) {
+      return {}
+    }
+
+    return Object.fromEntries(
+      Object.entries(parsedProgress).filter(
+        ([career, topics]) =>
+          typeof career === 'string' &&
+          Array.isArray(topics) &&
+          topics.every(topic => typeof topic === 'string')
+      )
+    )
+  } catch {
+    return {}
+  }
 })
 
 // Save progress whenever it changes
 useEffect(() => {
-  localStorage.setItem(
-    'careerCompassProgress',
-    JSON.stringify(progressByCareer)
-  )
+  try {
+    localStorage.setItem(
+      'careerCompassProgress',
+      JSON.stringify(progressByCareer)
+    )
+  } catch (error) {
+    console.error('Unable to save learning progress:', error)
+  }
+}, [progressByCareer])
+useEffect(() => {
+  try {
+    localStorage.setItem(
+      'careerCompassProgress',
+      JSON.stringify(progressByCareer)
+    )
+  } catch (error) {
+    console.error('Unable to save learning progress:', error)
+  }
 }, [progressByCareer])
 
 // Calculate total topics in the selected career roadmap
@@ -40,9 +77,17 @@ const totalTopics = selectedRoadmap
   : 0
 
 // Get completed topics for the selected career
-const completedCount = selectedRoadmap
-  ? (progressByCareer[selectedRoadmap.title] || []).length
-  : 0
+const roadmapTopics = selectedRoadmap
+  ? selectedRoadmap.stages.flatMap(stage => stage.topics)
+  : []
+
+const completedTopics = selectedRoadmap
+  ? progressByCareer[selectedRoadmap.title] || []
+  : []
+
+const completedCount = roadmapTopics.filter(topic =>
+  completedTopics.includes(topic)
+).length
 
 // Calculate completion percentage
 const progressPercentage = totalTopics === 0
@@ -231,15 +276,19 @@ if (recommendations) {
 
               <p>{career.description}</p>
 
-              <div className="match-score">
-                <strong>{career.score}% Match</strong>
-                <div className="score-track">
-                  <div
-                    className="score-fill"
-                    style={{ width: `${career.score}%` }}
-                  ></div>
-                </div>
-              </div>
+              <p className="match-explanation">
+  {career.matchedSkills.length > 0 ||
+   career.matchedInterests.length > 0 ||
+   career.preferenceMatch
+    ? `Your profile matches this career through ${
+        career.matchedSkills.length
+      } skill(s), ${
+        career.matchedInterests.length
+      } interest(s), and ${
+        career.preferenceMatch ? 'your career preference' : 'no preference match'
+      }.`
+    : 'Explore this career to discover whether it interests you.'}
+</p>
 
               <h4>Matching Skills</h4>
               <p>

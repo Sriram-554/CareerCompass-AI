@@ -52,29 +52,31 @@ const careerPaths = [
 ]
 
 export function generateRecommendations(student) {
+  const studentSkills = student?.skills || []
+  const studentInterests = student?.interests || []
+
   const results = careerPaths.map((career) => {
     const matchedSkills = career.skills.filter(skill =>
-      student.skills.includes(skill)
+      studentSkills.includes(skill)
     )
 
     const matchedInterests = career.interests.filter(interest =>
-      student.interests.includes(interest)
+      studentInterests.includes(interest)
     )
 
     const preferenceMatch =
-      student.preference === career.preference
+      student?.preference === career.preference
 
-    const totalPoints =
-      career.skills.length +
-      career.interests.length + 2
+    const skillScore =
+      (matchedSkills.length / career.skills.length) * 40
 
-    const earnedPoints =
-      matchedSkills.length +
-      matchedInterests.length +
-      (preferenceMatch ? 2 : 0)
+    const interestScore =
+      (matchedInterests.length / career.interests.length) * 40
+
+    const preferenceScore = preferenceMatch ? 20 : 0
 
     const score = Math.round(
-      (earnedPoints / totalPoints) * 100
+      skillScore + interestScore + preferenceScore
     )
 
     return {
