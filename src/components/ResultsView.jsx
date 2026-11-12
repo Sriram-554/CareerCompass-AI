@@ -4,6 +4,7 @@ function ResultsView({
   roadmapMessage,
   onViewRoadmap,
   onEditAssessment,
+  onStartOver,
 }) {
   return (
     <>
@@ -78,13 +79,22 @@ function ResultsView({
         ))}
       </div>
 
-      <button
-        type="button"
-        className="assessment-submit"
-        onClick={onEditAssessment}
-      >
-        Edit My Assessment
-      </button>
+      <div className="results-actions">
+        <button
+          type="button"
+          className="assessment-submit"
+          onClick={onEditAssessment}
+        >
+          Edit My Assessment
+        </button>
+        <button
+          type="button"
+          className="secondary-action full-width"
+          onClick={onStartOver}
+        >
+          Start Over
+        </button>
+      </div>
     </>
   )
 }

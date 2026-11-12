@@ -5,58 +5,41 @@ import { getRoadmap } from './roadmapData'
 import AssessmentForm from './components/AssessmentForm'
 import ResultsView from './components/ResultsView'
 import RoadmapView from './components/RoadmapView'
+import {
+  loadProgress,
+  saveProgress,
+  loadProfile,
+  saveProfile,
+  clearProfile,
+  exportRoadmapChecklist,
+} from './utils/storage'
+
+const emptyForm = {
+  name: '',
+  degree: 'B.Tech',
+  branch: '',
+  year: '',
+  skills: [],
+  interests: [],
+  preference: '',
+}
 
 function Assessment({ onBack }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    degree: 'B.Tech',
-    branch: '',
-    year: '',
-    skills: [],
-    interests: [],
-    preference: '',
-  })
+  const savedProfile = loadProfile()
+
+  const [formData, setFormData] = useState(savedProfile?.formData || emptyForm)
   const [formErrors, setFormErrors] = useState({})
-  const [recommendations, setRecommendations] = useState(null)
+  const [recommendations, setRecommendations] = useState(() => {
+    if (!savedProfile?.formData) return null
+    return generateRecommendations(savedProfile.formData)
+  })
   const [selectedRoadmap, setSelectedRoadmap] = useState(null)
   const [roadmapMessage, setRoadmapMessage] = useState('')
-
-  const [progressByCareer, setProgressByCareer] = useState(() => {
-    try {
-      const savedProgress = localStorage.getItem('careerCompassProgress')
-      if (!savedProgress) return {}
-
-      const parsedProgress = JSON.parse(savedProgress)
-      if (
-        !parsedProgress ||
-        typeof parsedProgress !== 'object' ||
-        Array.isArray(parsedProgress)
-      ) {
-        return {}
-      }
-
-      return Object.fromEntries(
-        Object.entries(parsedProgress).filter(
-          ([career, topics]) =>
-            typeof career === 'string' &&
-            Array.isArray(topics) &&
-            topics.every(topic => typeof topic === 'string')
-        )
-      )
-    } catch {
-      return {}
-    }
-  })
+  const [hasSavedProfile, setHasSavedProfile] = useState(!!savedProfile)
+  const [progressByCareer, setProgressByCareer] = useState(() => loadProgress())
 
   useEffect(() => {
-    try {
-      localStorage.setItem(
-        'careerCompassProgress',
-        JSON.stringify(progressByCareer)
-      )
-    } catch (error) {
-      console.error('Unable to save learning progress:', error)
-    }
+    saveProgress(progressByCareer)
   }, [progressByCareer])
 
   const totalTopics = selectedRoadmap
@@ -127,8 +110,12 @@ function Assessment({ onBack }) {
   function handleSubmit(event) {
     event.preventDefault()
     if (!validateForm()) return
-    setRecommendations(generateRecommendations(formData))
+
+    const results = generateRecommendations(formData)
+    setRecommendations(results)
     setRoadmapMessage('')
+    saveProfile(formData)
+    setHasSavedProfile(true)
   }
 
   function handleViewRoadmap(careerTitle) {
@@ -152,6 +139,33 @@ function Assessment({ onBack }) {
         : [...completed, topic]
       return { ...previous, [career]: updated }
     })
+  }
+
+  function handleToggleStage(stageTopics, markComplete) {
+    setProgressByCareer(previous => {
+      const career = selectedRoadmap.title
+      const completed = previous[career] || []
+
+      if (markComplete) {
+        const merged = Array.from(new Set([...completed, ...stageTopics]))
+        return { ...previous, [career]: merged }
+      }
+
+      return {
+        ...previous,
+        [career]: completed.filter(topic => !stageTopics.includes(topic)),
+      }
+    })
+  }
+
+  function handleStartOver() {
+    clearProfile()
+    setFormData(emptyForm)
+    setFormErrors({})
+    setRecommendations(null)
+    setSelectedRoadmap(null)
+    setRoadmapMessage('')
+    setHasSavedProfile(false)
   }
 
   const header = (
@@ -181,6 +195,10 @@ function Assessment({ onBack }) {
             totalTopics={totalTopics}
             completedTopics={completedTopics}
             onToggleTopic={handleToggleTopic}
+            onToggleStage={handleToggleStage}
+            onExport={() =>
+              exportRoadmapChecklist(selectedRoadmap, completedTopics)
+            }
             onBackToResults={() => setSelectedRoadmap(null)}
           />
         </div>
@@ -203,6 +221,7 @@ function Assessment({ onBack }) {
               setRecommendations(null)
               setRoadmapMessage('')
             }}
+            onStartOver={handleStartOver}
           />
         </div>
       </div>
@@ -221,6 +240,25 @@ function Assessment({ onBack }) {
             career journey.
           </p>
         </div>
+
+        {hasSavedProfile && (
+          <div className="saved-profile-banner">
+            <div>
+              <strong>Saved profile found</strong>
+              <p>
+                Your previous answers are loaded. Submit again to refresh
+                recommendations, or start over.
+              </p>
+            </div>
+            <button
+              type="button"
+              className="secondary-action"
+              onClick={handleStartOver}
+            >
+              Start Over
+            </button>
+          </div>
+        )}
 
         <AssessmentForm
           formData={formData}
