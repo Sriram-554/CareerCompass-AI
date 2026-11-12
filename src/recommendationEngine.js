@@ -40,6 +40,14 @@ const careerPaths = [
     description: 'Work with cloud infrastructure and scalable applications.',
   },
   {
+    title: 'DevOps Engineer',
+    skills: ['Linux', 'Docker', 'Python'],
+    interests: ['DevOps', 'Cloud Computing'],
+    preference: 'Software Development',
+    branchKeywords: ['devops', 'cloud', 'sre', 'cse', 'it', 'computer'],
+    description: 'Automate software delivery pipelines and keep systems reliable at scale.',
+  },
+  {
     title: 'Mobile App Developer',
     skills: ['Java', 'Kotlin', 'JavaScript'],
     interests: ['App Development'],

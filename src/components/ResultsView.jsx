@@ -1,0 +1,92 @@
+function ResultsView({
+  firstName,
+  recommendations,
+  roadmapMessage,
+  onViewRoadmap,
+  onEditAssessment,
+}) {
+  return (
+    <>
+      <div className="assessment-heading">
+        <span>YOUR CAREER DISCOVERY RESULTS</span>
+        <h1>Hi {firstName}, here are your career matches!</h1>
+        <p>
+          Based on your skills, interests, branch, and preferences,
+          here are your recommended career paths.
+        </p>
+      </div>
+
+      {roadmapMessage && (
+        <div className="form-error-banner" role="alert">
+          {roadmapMessage}
+        </div>
+      )}
+
+      <div className="results-list">
+        {recommendations.slice(0, 3).map((career, index) => (
+          <div className="result-card" key={career.title}>
+            <span className="result-rank">
+              #{index + 1} Recommended Career
+            </span>
+
+            <h2>{career.title}</h2>
+            <p>{career.description}</p>
+
+            <div className="match-score">
+              <strong>Match score: {career.score}%</strong>
+              <div className="score-track">
+                <div
+                  className="score-fill"
+                  style={{ width: `${career.score}%` }}
+                ></div>
+              </div>
+            </div>
+
+            <p className="match-explanation">{career.whyMatch}</p>
+
+            <h4>Matching Skills</h4>
+            <p>
+              {career.matchedSkills.join(', ') || 'No direct skill matches yet'}
+            </p>
+
+            <h4>Skills to Build Next</h4>
+            <p>
+              {career.missingSkills.length > 0
+                ? career.missingSkills.join(', ')
+                : 'You already cover the core skills for this path.'}
+            </p>
+
+            <h4>Matching Interests</h4>
+            <p>
+              {career.matchedInterests.join(', ') || 'Explore this field further'}
+            </p>
+
+            {career.preferenceMatch && (
+              <span className="preference-match">
+                ✓ Matches your career preference
+              </span>
+            )}
+
+            <button
+              type="button"
+              className="roadmap-button"
+              onClick={() => onViewRoadmap(career.title)}
+            >
+              View Learning Roadmap →
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        className="assessment-submit"
+        onClick={onEditAssessment}
+      >
+        Edit My Assessment
+      </button>
+    </>
+  )
+}
+
+export default ResultsView

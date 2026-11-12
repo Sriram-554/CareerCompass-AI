@@ -34,7 +34,7 @@ describe('Career Recommendation Engine', () => {
   it('should handle an empty student profile', () => {
     const results = generateRecommendations({})
 
-    expect(results.length).toBe(7)
+    expect(results.length).toBe(8)
     expect(results.every(career => career.score === 0)).toBe(true)
   })
 
@@ -119,5 +119,18 @@ describe('Career Recommendation Engine', () => {
 
     const dataAnalyst = results.find(career => career.title === 'Data Analyst')
     expect(dataAnalyst.whyMatch.toLowerCase()).toContain('matching')
+  })
+
+  it('should include DevOps Engineer in recommendations', () => {
+    const results = generateRecommendations({
+      skills: ['Linux', 'Docker'],
+      interests: ['DevOps'],
+      preference: 'Software Development',
+      branch: 'CSE DevOps',
+    })
+
+    const devops = results.find(career => career.title === 'DevOps Engineer')
+    expect(devops).toBeTruthy()
+    expect(devops.score).toBeGreaterThan(0)
   })
 })

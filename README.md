@@ -5,14 +5,14 @@ A student-focused career guidance platform that helps you discover career paths 
 ## Features
 
 - **Career Assessment** — Share your education, skills, interests, and preferences
-- **Smart Recommendations** — Ranked career matches with transparent match scores
+- **Smart Recommendations** — Ranked career matches with transparent match scores, skill gaps, and plain-language explanations
 - **Personalized Roadmaps** — Stage-by-stage learning paths with topics, tools, and projects
 - **Progress Tracking** — Mark topics complete; progress is saved in your browser
 
 ## Tech Stack
 
 - React 19 + Vite
-- Client-side recommendation engine (weighted skill / interest / preference scoring)
+- Client-side recommendation engine (skills, interests, preference, branch, year)
 - localStorage for learning progress
 
 ## Getting Started
@@ -36,17 +36,21 @@ npm run lint     # Oxlint
 ## How It Works
 
 1. **Know yourself** — Fill in name, degree, branch, year, skills, interests, and career preference.
-2. **Discover careers** — The engine scores each career path and shows your top matches with reasons.
+2. **Discover careers** — The engine scores each career path and shows your top matches with reasons and skill gaps.
 3. **Build your future** — Open a learning roadmap, check off topics, and track progress over time.
 
 ## Project Structure
 
 ```text
 src/
-├── App.jsx                 # Landing page + assessment toggle
-├── Assessment.jsx          # Form, results, and roadmap views
-├── recommendationEngine.js # Career scoring logic
-├── roadmapData.js          # Learning paths per career
+├── App.jsx
+├── Assessment.jsx              # Orchestrates form → results → roadmap
+├── components/
+│   ├── AssessmentForm.jsx
+│   ├── ResultsView.jsx
+│   └── RoadmapView.jsx
+├── recommendationEngine.js
+├── roadmapData.js
 ├── App.css / Assessment.css
 └── recommendationEngine.test.js
 ```
@@ -58,6 +62,7 @@ src/
 - Data Analyst
 - Cybersecurity Analyst
 - Cloud Engineer
+- DevOps Engineer
 - Mobile App Developer
 - Research Scientist
 
