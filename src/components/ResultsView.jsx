@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react'
 import CoachPlan from './CoachPlan'
 import ShareResults from './ShareResults'
 import { generateCoachPlan } from '../coachEngine'
+import { fetchCoachPlan } from '../utils/llmCoach'
 
 function ResultsView({
   firstName,
@@ -13,7 +15,36 @@ function ResultsView({
   onStartOver,
 }) {
   const topCareer = recommendations[0]
-  const coachPlan = generateCoachPlan(formData, topCareer)
+  const [coachPlan, setCoachPlan] = useState(() =>
+    topCareer ? generateCoachPlan(formData, topCareer) : null
+  )
+  const [coachLoading, setCoachLoading] = useState(Boolean(topCareer))
+  const [coachSource, setCoachSource] = useState('guided')
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadCoach() {
+      if (!topCareer) {
+        setCoachPlan(null)
+        setCoachLoading(false)
+        return
+      }
+
+      setCoachLoading(true)
+      const result = await fetchCoachPlan(formData, topCareer)
+      if (cancelled) return
+
+      setCoachPlan(result.plan)
+      setCoachSource(result.source || result.plan?.source || 'guided')
+      setCoachLoading(false)
+    }
+
+    loadCoach()
+    return () => {
+      cancelled = true
+    }
+  }, [formData, topCareer])
 
   return (
     <>
@@ -35,7 +66,11 @@ function ResultsView({
         </div>
       )}
 
-      <CoachPlan plan={coachPlan} />
+      <CoachPlan
+        plan={coachPlan}
+        loading={coachLoading}
+        source={coachSource}
+      />
 
       <div className="results-list">
         {recommendations.slice(0, 3).map((career, index) => (
