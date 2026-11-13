@@ -2,18 +2,25 @@
 
 A student-focused career guidance platform that helps you discover career paths aligned with your skills and interests, then gives you a practical learning roadmap to get there.
 
+## Live Demo
+
+**Website:** [https://career-compass-ai-ochre-rho.vercel.app](https://career-compass-ai-ochre-rho.vercel.app)
+
 ## Features
 
 - **Career Assessment** — Share your education, skills, interests, and preferences
 - **Smart Recommendations** — Ranked career matches with transparent match scores, skill gaps, and plain-language explanations
 - **Personalized Roadmaps** — Stage-by-stage learning paths with topics, tools, and projects
 - **Progress Tracking** — Mark topics complete; progress is saved in your browser
+- **Profile Persistence** — Saved assessment profile and learning progress in localStorage
+- **Export / Print** — Download roadmap checklists or print them
 
 ## Tech Stack
 
 - React 19 + Vite
 - Client-side recommendation engine (skills, interests, preference, branch, year)
-- localStorage for learning progress
+- localStorage for profile and learning progress
+- Deployed on Vercel
 
 ## Getting Started
 
@@ -49,6 +56,8 @@ src/
 │   ├── AssessmentForm.jsx
 │   ├── ResultsView.jsx
 │   └── RoadmapView.jsx
+├── utils/
+│   └── storage.js              # localStorage helpers + checklist export
 ├── recommendationEngine.js
 ├── roadmapData.js
 ├── App.css / Assessment.css
@@ -66,10 +75,17 @@ src/
 - Mobile App Developer
 - Research Scientist
 
+## Deployment
+
+The app is deployed on [Vercel](https://vercel.com).
+
+- Production URL: https://career-compass-ai-ochre-rho.vercel.app
+- Pushes to `main` trigger automatic redeploys
+
 ## Notes
 
 - Recommendations are rule-based (not a trained ML model). Scores are designed to be explainable.
-- Progress is stored only in the browser (`localStorage`). Clearing site data resets it.
+- Progress and profile are stored in the browser (`localStorage`) unless a backend is added later.
 - This is an early prototype aimed at students exploring tech careers.
 
 ## License
