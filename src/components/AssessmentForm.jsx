@@ -28,6 +28,26 @@ function AssessmentForm({
             {formErrors.name}
           </p>
         )}
+
+        <label htmlFor="collegeCode">College invite code (optional)</label>
+        <input
+          id="collegeCode"
+          type="text"
+          name="collegeCode"
+          placeholder="Example: DEMO2026"
+          value={formData.collegeCode || ''}
+          onChange={onChange}
+          aria-invalid={!!formErrors.collegeCode}
+          aria-describedby={formErrors.collegeCode ? 'college-error' : undefined}
+        />
+        {formErrors.collegeCode && (
+          <p id="college-error" className="field-error" role="alert">
+            {formErrors.collegeCode}
+          </p>
+        )}
+        <p className="field-hint">
+          Have a classroom code from your college? Enter it to join college mode.
+        </p>
       </section>
 
       <section className="form-section">

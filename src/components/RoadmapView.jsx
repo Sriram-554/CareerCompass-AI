@@ -1,3 +1,5 @@
+import { getRoadmapExtras } from '../roadmapResources'
+
 function RoadmapView({
   roadmap,
   progressPercentage,
@@ -9,6 +11,8 @@ function RoadmapView({
   onExport,
   onBackToResults,
 }) {
+  const extras = getRoadmapExtras(roadmap.title)
+
   return (
     <>
       <div className="assessment-heading">
@@ -47,6 +51,33 @@ function RoadmapView({
           </div>
         </div>
       </div>
+
+      {(extras.resources?.length > 0 || extras.checkpoint) && (
+        <div className="roadmap-extras">
+          {extras.checkpoint && (
+            <div className="checkpoint-box">
+              <strong>Stage checkpoint</strong>
+              <p>{extras.checkpoint}</p>
+            </div>
+          )}
+
+          {extras.resources?.length > 0 && (
+            <div className="resources-box">
+              <strong>Free resources</strong>
+              <ul>
+                {extras.resources.map(resource => (
+                  <li key={resource.url}>
+                    <a href={resource.url} target="_blank" rel="noreferrer">
+                      {resource.title}
+                    </a>
+                    <span>{resource.type}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="roadmap-stages">
         {roadmap.stages.map((stage, index) => {

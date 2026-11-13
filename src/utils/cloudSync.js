@@ -24,6 +24,8 @@ export async function loadCloudProfile(userId) {
     skills: data.skills || [],
     interests: data.interests || [],
     preference: data.preference || '',
+    collegeCode: data.college_code || '',
+    collegeName: data.college_name || '',
   }
 }
 
@@ -39,6 +41,8 @@ export async function saveCloudProfile(userId, formData) {
     skills: formData.skills || [],
     interests: formData.interests || [],
     preference: formData.preference || '',
+    college_code: formData.collegeCode || '',
+    college_name: formData.collegeName || '',
     updated_at: new Date().toISOString(),
   })
 

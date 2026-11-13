@@ -1,11 +1,20 @@
+import CoachPlan from './CoachPlan'
+import ShareResults from './ShareResults'
+import { generateCoachPlan } from '../coachEngine'
+
 function ResultsView({
   firstName,
+  formData,
   recommendations,
   roadmapMessage,
+  collegeName,
   onViewRoadmap,
   onEditAssessment,
   onStartOver,
 }) {
+  const topCareer = recommendations[0]
+  const coachPlan = generateCoachPlan(formData, topCareer)
+
   return (
     <>
       <div className="assessment-heading">
@@ -15,6 +24,9 @@ function ResultsView({
           Based on your skills, interests, branch, and preferences,
           here are your recommended career paths.
         </p>
+        {collegeName && (
+          <p className="college-badge">College mode: {collegeName}</p>
+        )}
       </div>
 
       {roadmapMessage && (
@@ -22,6 +34,8 @@ function ResultsView({
           {roadmapMessage}
         </div>
       )}
+
+      <CoachPlan plan={coachPlan} />
 
       <div className="results-list">
         {recommendations.slice(0, 3).map((career, index) => (
@@ -78,6 +92,12 @@ function ResultsView({
           </div>
         ))}
       </div>
+
+      <ShareResults
+        firstName={firstName}
+        recommendations={recommendations}
+        collegeName={collegeName}
+      />
 
       <div className="results-actions">
         <button
