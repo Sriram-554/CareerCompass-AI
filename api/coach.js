@@ -1,29 +1,40 @@
 function buildFallbackPlan(student, career) {
-  const missing = career?.missingSkills?.slice(0, 2) || ['core fundamentals']
+  const missing =
+    career?.missingSkills?.length > 0
+      ? career.missingSkills.filter(Boolean).slice(0, 2)
+      : ['core fundamentals']
+
+  const skillOne = missing[0] || 'core fundamentals'
+  const skillTwo = missing[1]
+
   return {
     careerTitle: career?.title || 'Career path',
     headline: `Your personalized plan for ${career?.title || 'your career'}`,
-    whyFit: career?.whyMatch || 'This path aligns with your current profile.',
+    whyFit:
+      career?.whyMatch ||
+      'This path aligns with your current profile and is a strong next step to explore.',
     focusSkills: [
-      ...(career?.missingSkills || []).slice(0, 3),
-      ...(career?.matchedSkills || []).slice(0, 2),
-    ].filter(Boolean).slice(0, 4),
+      ...(career?.missingSkills || []),
+      ...(career?.matchedSkills || []),
+    ]
+      .filter(Boolean)
+      .slice(0, 4),
     thirtyDayPlan: [
       {
         week: 'Week 1',
-        focus: `Strengthen ${missing[0]}`,
+        focus: `Strengthen ${skillOne}`,
         actions: [
-          `Study ${missing[0]} daily for 45–60 minutes`,
+          `Study ${skillOne} daily for 45–60 minutes`,
           'Build 3 tiny practice examples',
           'Write short notes on what is still unclear',
         ],
       },
       {
         week: 'Week 2',
-        focus: missing[1] ? `Add ${missing[1]}` : 'Apply fundamentals',
+        focus: skillTwo ? `Add ${skillTwo}` : 'Apply fundamentals',
         actions: [
-          missing[1]
-            ? `Learn the basics of ${missing[1]}`
+          skillTwo
+            ? `Learn the basics of ${skillTwo}`
             : 'Revisit weak topics from week 1',
           'Complete one guided exercise every 2 days',
           'Track progress in a simple checklist',
@@ -53,7 +64,7 @@ function buildFallbackPlan(student, career) {
       `Portfolio project for ${career?.title || 'this path'}`,
       `Documented case study for ${career?.title || 'this path'}`,
     ],
-    nextMove: missing[0] || 'the first roadmap stage',
+    nextMove: skillOne,
     source: 'guided',
   }
 }
@@ -87,7 +98,7 @@ function normalizePlan(parsed, student, career) {
         ? parsed.whyFit.trim()
         : fallback.whyFit,
     focusSkills: Array.isArray(parsed.focusSkills)
-      ? parsed.focusSkills.map(String).slice(0, 6)
+      ? parsed.focusSkills.map(String).filter(Boolean).slice(0, 6)
       : fallback.focusSkills,
     thirtyDayPlan: Array.isArray(parsed.thirtyDayPlan)
       ? parsed.thirtyDayPlan.slice(0, 4).map((week, index) => ({
