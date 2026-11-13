@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Assessment from './Assessment'
+import AuthButton from './components/AuthButton'
 import './App.css'
 
 const features = [
@@ -34,8 +35,6 @@ function App() {
 
   return (
     <div className="website">
-
-      {/* Navigation */}
       <nav className="navbar">
         <a href="#" className="logo" onClick={(e) => e.preventDefault()}>
           <span className="logo-icon">✦</span>
@@ -48,20 +47,21 @@ function App() {
           <a href="#how-it-works">How it works</a>
         </div>
 
-        <button
-          type="button"
-          className="nav-button"
-          onClick={() => setShowAssessment(true)}
-        >
-          Get Started <span>→</span>
-        </button>
+        <div className="nav-actions">
+          <AuthButton className="auth-nav-button" />
+          <button
+            type="button"
+            className="nav-button"
+            onClick={() => setShowAssessment(true)}
+          >
+            Get Started <span>→</span>
+          </button>
+        </div>
       </nav>
 
-      {/* Hero Section */}
       <main>
         <section className="hero" id="home">
           <div className="hero-content">
-
             <div className="announcement">
               <span>✦</span> Your future, guided by intelligence
             </div>
@@ -95,7 +95,6 @@ function App() {
               <span>✓ Skill-based recommendations</span>
               <span>✓ Personalized roadmaps</span>
             </div>
-
           </div>
 
           <div className="hero-visual">
@@ -131,7 +130,6 @@ function App() {
           </div>
         </section>
 
-        {/* Features */}
         <section className="features-section" id="features">
           <div className="section-heading">
             <span className="section-label">WHAT WE OFFER</span>
@@ -154,7 +152,6 @@ function App() {
           </div>
         </section>
 
-        {/* How it works */}
         <section className="how-section" id="how-it-works">
           <div className="section-heading">
             <span className="section-label">YOUR JOURNEY</span>
@@ -183,7 +180,6 @@ function App() {
           </div>
         </section>
 
-        {/* Assessment CTA */}
         <section className="assessment-section" id="assessment">
           <div>
             <span className="section-label">YOUR JOURNEY BEGINS HERE</span>
@@ -203,7 +199,6 @@ function App() {
         </section>
       </main>
 
-      {/* Footer */}
       <footer className="footer">
         <button
           type="button"
@@ -215,7 +210,6 @@ function App() {
         <p>Helping students turn their potential into possibilities.</p>
         <span>© 2026 CareerCompass AI. All rights reserved.</span>
       </footer>
-
     </div>
   )
 }

@@ -5,6 +5,8 @@ import { getRoadmap } from './roadmapData'
 import AssessmentForm from './components/AssessmentForm'
 import ResultsView from './components/ResultsView'
 import RoadmapView from './components/RoadmapView'
+import AuthButton from './components/AuthButton'
+import { useAuth } from './context/AuthContext'
 import {
   loadProgress,
   saveProgress,
@@ -13,6 +15,12 @@ import {
   clearProfile,
   exportRoadmapChecklist,
 } from './utils/storage'
+import {
+  loadCloudProfile,
+  saveCloudProfile,
+  loadCloudProgress,
+  saveCloudProgress,
+} from './utils/cloudSync'
 
 const emptyForm = {
   name: '',
@@ -25,6 +33,7 @@ const emptyForm = {
 }
 
 function Assessment({ onBack }) {
+  const { user } = useAuth()
   const savedProfile = loadProfile()
 
   const [formData, setFormData] = useState(savedProfile?.formData || emptyForm)
@@ -37,10 +46,54 @@ function Assessment({ onBack }) {
   const [roadmapMessage, setRoadmapMessage] = useState('')
   const [hasSavedProfile, setHasSavedProfile] = useState(!!savedProfile)
   const [progressByCareer, setProgressByCareer] = useState(() => loadProgress())
+  const [syncNote, setSyncNote] = useState('')
 
   useEffect(() => {
     saveProgress(progressByCareer)
-  }, [progressByCareer])
+    if (user?.id) {
+      saveCloudProgress(user.id, progressByCareer)
+    }
+  }, [progressByCareer, user])
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function hydrateFromCloud() {
+      if (!user?.id) {
+        setSyncNote('')
+        return
+      }
+
+      const [cloudProfile, cloudProgress] = await Promise.all([
+        loadCloudProfile(user.id),
+        loadCloudProgress(user.id),
+      ])
+
+      if (cancelled) return
+
+      if (cloudProfile) {
+        setFormData(cloudProfile)
+        setRecommendations(generateRecommendations(cloudProfile))
+        saveProfile(cloudProfile)
+        setHasSavedProfile(true)
+      }
+
+      if (cloudProgress && Object.keys(cloudProgress).length > 0) {
+        setProgressByCareer(previous => ({
+          ...previous,
+          ...cloudProgress,
+        }))
+      }
+
+      setSyncNote('Synced with your account')
+    }
+
+    hydrateFromCloud()
+
+    return () => {
+      cancelled = true
+    }
+  }, [user])
 
   const totalTopics = selectedRoadmap
     ? selectedRoadmap.stages.reduce(
@@ -107,7 +160,7 @@ function Assessment({ onBack }) {
     return Object.keys(errors).length === 0
   }
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault()
     if (!validateForm()) return
 
@@ -116,6 +169,11 @@ function Assessment({ onBack }) {
     setRoadmapMessage('')
     saveProfile(formData)
     setHasSavedProfile(true)
+
+    if (user?.id) {
+      await saveCloudProfile(user.id, formData)
+      setSyncNote('Profile saved to your account')
+    }
   }
 
   function handleViewRoadmap(careerTitle) {
@@ -173,13 +231,16 @@ function Assessment({ onBack }) {
       <h2>
         ✦ CareerCompass<span>AI</span>
       </h2>
-      {onBack ? (
-        <button type="button" className="header-link" onClick={onBack}>
-          Back to Home
-        </button>
-      ) : (
-        <a href="/">Back to Home</a>
-      )}
+      <div className="header-actions">
+        <AuthButton className="header-link" />
+        {onBack ? (
+          <button type="button" className="header-link" onClick={onBack}>
+            Back to Home
+          </button>
+        ) : (
+          <a href="/">Back to Home</a>
+        )}
+      </div>
     </header>
   )
 
@@ -188,6 +249,7 @@ function Assessment({ onBack }) {
       <div className="assessment-page">
         {header}
         <div className="assessment-container">
+          {syncNote && <p className="sync-note">{syncNote}</p>}
           <RoadmapView
             roadmap={selectedRoadmap}
             progressPercentage={progressPercentage}
@@ -212,6 +274,7 @@ function Assessment({ onBack }) {
       <div className="assessment-page">
         {header}
         <div className="assessment-container">
+          {syncNote && <p className="sync-note">{syncNote}</p>}
           <ResultsView
             firstName={firstName}
             recommendations={recommendations}
@@ -240,6 +303,8 @@ function Assessment({ onBack }) {
             career journey.
           </p>
         </div>
+
+        {syncNote && <p className="sync-note">{syncNote}</p>}
 
         {hasSavedProfile && (
           <div className="saved-profile-banner">
