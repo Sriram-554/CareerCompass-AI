@@ -21,6 +21,7 @@ import {
   loadCloudProgress,
   saveCloudProgress,
 } from './utils/cloudSync'
+import { resolveCollegeCode } from './utils/college'
 
 const emptyForm = {
   name: '',
@@ -30,13 +31,18 @@ const emptyForm = {
   skills: [],
   interests: [],
   preference: '',
+  collegeCode: '',
+  collegeName: '',
 }
 
 function Assessment({ onBack }) {
   const { user } = useAuth()
   const savedProfile = loadProfile()
 
-  const [formData, setFormData] = useState(savedProfile?.formData || emptyForm)
+  const [formData, setFormData] = useState({
+    ...emptyForm,
+    ...(savedProfile?.formData || {}),
+  })
   const [formErrors, setFormErrors] = useState({})
   const [recommendations, setRecommendations] = useState(() => {
     if (!savedProfile?.formData) return null
@@ -72,7 +78,10 @@ function Assessment({ onBack }) {
       if (cancelled) return
 
       if (cloudProfile) {
-        setFormData(cloudProfile)
+        setFormData({
+          ...emptyForm,
+          ...cloudProfile,
+        })
         setRecommendations(generateRecommendations(cloudProfile))
         saveProfile(cloudProfile)
         setHasSavedProfile(true)
@@ -164,14 +173,30 @@ function Assessment({ onBack }) {
     event.preventDefault()
     if (!validateForm()) return
 
-    const results = generateRecommendations(formData)
+    const college = await resolveCollegeCode(formData.collegeCode)
+    if (!college.ok) {
+      setFormErrors(prev => ({
+        ...prev,
+        collegeCode: college.error,
+      }))
+      return
+    }
+
+    const nextForm = {
+      ...formData,
+      collegeCode: college.code,
+      collegeName: college.collegeName,
+    }
+
+    const results = generateRecommendations(nextForm)
+    setFormData(nextForm)
     setRecommendations(results)
     setRoadmapMessage('')
-    saveProfile(formData)
+    saveProfile(nextForm)
     setHasSavedProfile(true)
 
     if (user?.id) {
-      await saveCloudProfile(user.id, formData)
+      await saveCloudProfile(user.id, nextForm)
       setSyncNote('Profile saved to your account')
     }
   }
@@ -277,8 +302,10 @@ function Assessment({ onBack }) {
           {syncNote && <p className="sync-note">{syncNote}</p>}
           <ResultsView
             firstName={firstName}
+            formData={formData}
             recommendations={recommendations}
             roadmapMessage={roadmapMessage}
+            collegeName={formData.collegeName}
             onViewRoadmap={handleViewRoadmap}
             onEditAssessment={() => {
               setRecommendations(null)

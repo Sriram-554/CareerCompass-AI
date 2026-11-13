@@ -100,6 +100,17 @@
   line-height: 1.7;
 }
 
+.college-badge {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .saved-profile-banner {
   display: flex;
   justify-content: space-between;
@@ -159,6 +170,12 @@
   font-size: 13px;
   margin: 8px 0 0;
   font-weight: 500;
+}
+
+.field-hint {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
 }
 
 .form-error-banner {
@@ -327,6 +344,119 @@
   transform: translateY(-2px);
 }
 
+.coach-plan,
+.share-card,
+.roadmap-extras {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 22px;
+}
+
+.coach-plan-header span,
+.share-card span {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.coach-plan-header h2,
+.share-card h3 {
+  margin: 10px 0;
+}
+
+.coach-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 14px;
+  margin: 16px 0;
+}
+
+.coach-card {
+  background: #faf9ff;
+  border: 1px solid #ece8ff;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 12px;
+}
+
+.coach-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.coach-tags span {
+  background: #eeeaff;
+  color: var(--accent-dark);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.coach-weeks {
+  display: grid;
+  gap: 12px;
+}
+
+.coach-week ul,
+.coach-projects,
+.resources-box ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.share-preview {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  white-space: pre-wrap;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow: auto;
+}
+
+.share-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.share-status {
+  margin-top: 10px;
+  color: #166534;
+  font-weight: 600;
+}
+
+.checkpoint-box,
+.resources-box {
+  margin-bottom: 14px;
+}
+
+.resources-box li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.resources-box a {
+  color: var(--accent-dark);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.resources-box span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
 .roadmap-stages {
   display: grid;
   gap: 20px;
@@ -483,14 +613,18 @@
     padding: 0 16px 24px;
   }
 
-  .selection-grid {
+  .selection-grid,
+  .coach-grid {
     grid-template-columns: 1fr;
   }
 
   .form-section,
   .result-card,
   .roadmap-stage,
-  .progress-card {
+  .progress-card,
+  .coach-plan,
+  .share-card,
+  .roadmap-extras {
     padding: 20px;
   }
 
