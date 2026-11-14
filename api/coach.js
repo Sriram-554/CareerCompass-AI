@@ -141,12 +141,16 @@ export default async function handler(req, res) {
   }
 
   const apiKey = process.env.GROQ_API_KEY || process.env.OPENAI_API_KEY
-  const baseUrl = process.env.GROQ_API_KEY
+  const usingGroq = Boolean(process.env.GROQ_API_KEY)
+  const baseUrl = usingGroq
     ? 'https://api.groq.com/openai/v1'
     : 'https://api.openai.com/v1'
+
+  // Groq free/developer tier (Nov 2026): llama-3.1-8b-instant is enterprise-only.
+  // Use openai/gpt-oss-20b on Groq free tier.
   const model =
     process.env.LLM_MODEL ||
-    (process.env.GROQ_API_KEY ? 'llama-3.1-8b-instant' : 'gpt-4o-mini')
+    (usingGroq ? 'openai/gpt-oss-20b' : 'gpt-4o-mini')
 
   if (!apiKey) {
     return res.status(200).json({

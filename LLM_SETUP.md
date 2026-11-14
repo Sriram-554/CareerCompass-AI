@@ -1,6 +1,6 @@
 # Real LLM Coach Setup (Groq)
 
-CareerCompass can generate coach plans with a real LLM through a secure Vercel API route.
+CareerCompass generates coach plans with a real LLM through a secure Vercel API route.
 
 - Frontend calls `/api/coach`
 - API key stays on the server (never in the browser)
@@ -25,7 +25,10 @@ Optional:
 
 | Name | Value |
 |------|--------|
-| `LLM_MODEL` | `llama-3.1-8b-instant` (default) |
+| `LLM_MODEL` | `openai/gpt-oss-20b` (default on Groq free tier) |
+
+> Note (Nov 2026): `llama-3.1-8b-instant` is enterprise-only on Groq.
+> Free/developer projects should use `openai/gpt-oss-20b`.
 
 Save for **Production** (and Preview if you want).
 
@@ -39,7 +42,7 @@ Deployments → latest → **Redeploy**
 2. Complete an assessment
 3. On results, the coach card should show **Generated with AI**
 
-If the key is missing, it shows **Guided plan** instead (still works).
+If the key is missing or the model fails, it shows **Guided plan** instead (still works).
 
 ## Local development note
 
