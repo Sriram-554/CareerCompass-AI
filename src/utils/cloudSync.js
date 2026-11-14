@@ -26,6 +26,7 @@ export async function loadCloudProfile(userId) {
     preference: data.preference || '',
     collegeCode: data.college_code || '',
     collegeName: data.college_name || '',
+    updatedAt: data.updated_at || null,
   }
 }
 
@@ -51,12 +52,34 @@ export async function saveCloudProfile(userId, formData) {
   }
 }
 
+export async function clearCloudProfile(userId) {
+  if (!isSupabaseConfigured || !supabase || !userId) return
+
+  const { error } = await supabase.from('profiles').upsert({
+    id: userId,
+    name: '',
+    degree: 'B.Tech',
+    branch: '',
+    year: '',
+    skills: [],
+    interests: [],
+    preference: '',
+    college_code: '',
+    college_name: '',
+    updated_at: new Date().toISOString(),
+  })
+
+  if (error) {
+    console.error('Failed to clear cloud profile:', error.message)
+  }
+}
+
 export async function loadCloudProgress(userId) {
   if (!isSupabaseConfigured || !supabase || !userId) return {}
 
   const { data, error } = await supabase
     .from('learning_progress')
-    .select('career_title, completed_topics')
+    .select('career_title, completed_topics, updated_at')
     .eq('user_id', userId)
 
   if (error) {
@@ -91,5 +114,18 @@ export async function saveCloudProgress(userId, progressByCareer) {
 
   if (error) {
     console.error('Failed to save cloud progress:', error.message)
+  }
+}
+
+export async function clearCloudProgress(userId) {
+  if (!isSupabaseConfigured || !supabase || !userId) return
+
+  const { error } = await supabase
+    .from('learning_progress')
+    .delete()
+    .eq('user_id', userId)
+
+  if (error) {
+    console.error('Failed to clear cloud progress:', error.message)
   }
 }

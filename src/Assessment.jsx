@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './Assessment.css'
 import { generateRecommendations } from './recommendationEngine'
 import { getRoadmap } from './roadmapData'
@@ -13,6 +13,8 @@ import {
   loadProfile,
   saveProfile,
   clearProfile,
+  clearProgress,
+  mergeProgress,
   exportRoadmapChecklist,
 } from './utils/storage'
 import {
@@ -20,6 +22,8 @@ import {
   saveCloudProfile,
   loadCloudProgress,
   saveCloudProgress,
+  clearCloudProfile,
+  clearCloudProgress,
 } from './utils/cloudSync'
 import { resolveCollegeCode } from './utils/college'
 
@@ -38,6 +42,7 @@ const emptyForm = {
 function Assessment({ onBack }) {
   const { user } = useAuth()
   const savedProfile = loadProfile()
+  const skipNextProgressCloudSave = useRef(false)
 
   const [formData, setFormData] = useState({
     ...emptyForm,
@@ -56,9 +61,10 @@ function Assessment({ onBack }) {
 
   useEffect(() => {
     saveProgress(progressByCareer)
-    if (user?.id) {
+    if (user?.id && !skipNextProgressCloudSave.current) {
       saveCloudProgress(user.id, progressByCareer)
     }
+    skipNextProgressCloudSave.current = false
   }, [progressByCareer, user])
 
   useEffect(() => {
@@ -77,7 +83,7 @@ function Assessment({ onBack }) {
 
       if (cancelled) return
 
-      if (cloudProfile) {
+      if (cloudProfile && (cloudProfile.name || cloudProfile.branch || cloudProfile.skills?.length)) {
         setFormData({
           ...emptyForm,
           ...cloudProfile,
@@ -88,10 +94,8 @@ function Assessment({ onBack }) {
       }
 
       if (cloudProgress && Object.keys(cloudProgress).length > 0) {
-        setProgressByCareer(previous => ({
-          ...previous,
-          ...cloudProgress,
-        }))
+        skipNextProgressCloudSave.current = true
+        setProgressByCareer(previous => mergeProgress(previous, cloudProgress))
       }
 
       setSyncNote('Synced with your account')
@@ -101,6 +105,20 @@ function Assessment({ onBack }) {
 
     return () => {
       cancelled = true
+    }
+  }, [user])
+
+  // If auth user becomes null (logout), reset visible assessment state
+  useEffect(() => {
+    if (user) return
+    const local = loadProfile()
+    if (!local) {
+      setFormData(emptyForm)
+      setRecommendations(null)
+      setSelectedRoadmap(null)
+      setHasSavedProfile(false)
+      setProgressByCareer({})
+      setSyncNote('')
     }
   }, [user])
 
@@ -241,14 +259,25 @@ function Assessment({ onBack }) {
     })
   }
 
-  function handleStartOver() {
+  async function handleStartOver() {
     clearProfile()
+    clearProgress()
     setFormData(emptyForm)
     setFormErrors({})
     setRecommendations(null)
     setSelectedRoadmap(null)
     setRoadmapMessage('')
     setHasSavedProfile(false)
+    setProgressByCareer({})
+    setSyncNote('')
+
+    if (user?.id) {
+      await Promise.all([
+        clearCloudProfile(user.id),
+        clearCloudProgress(user.id),
+      ])
+      setSyncNote('Assessment reset for your account')
+    }
   }
 
   const header = (
@@ -338,8 +367,10 @@ function Assessment({ onBack }) {
             <div>
               <strong>Saved profile found</strong>
               <p>
-                Your previous answers are loaded. Submit again to refresh
-                recommendations, or start over.
+                {user
+                  ? 'Your previous answers are loaded from your account.'
+                  : 'Your previous answers are saved on this device only. Log in to sync across devices.'}
+                {' '}Submit again to refresh recommendations, or start over.
               </p>
             </div>
             <button

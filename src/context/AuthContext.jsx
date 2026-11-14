@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { isSupabaseConfigured, supabase } from '../lib/supabase'
+import { clearAllLocalUserData } from '../utils/storage'
 
 const AuthContext = createContext(null)
 
@@ -14,17 +15,32 @@ export function AuthProvider({ children }) {
     }
 
     let mounted = true
+    let previousUserId = null
 
     supabase.auth.getSession().then(({ data }) => {
       if (!mounted) return
-      setUser(data.session?.user ?? null)
+      const nextUser = data.session?.user ?? null
+      previousUserId = nextUser?.id || null
+      setUser(nextUser)
       setLoading(false)
     })
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      const nextUser = session?.user ?? null
+      const nextId = nextUser?.id || null
+
+      // Clear local assessment/progress when logging out or switching accounts
+      if (
+        event === 'SIGNED_OUT' ||
+        (previousUserId && nextId && previousUserId !== nextId)
+      ) {
+        clearAllLocalUserData()
+      }
+
+      previousUserId = nextId
+      setUser(nextUser)
       setLoading(false)
     })
 
@@ -47,6 +63,8 @@ export function AuthProvider({ children }) {
       },
       async signIn(email, password) {
         if (!supabase) throw new Error('Supabase is not configured')
+        // Avoid leaking previous guest/local profile into the new session
+        clearAllLocalUserData()
         const { data, error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -57,6 +75,7 @@ export function AuthProvider({ children }) {
       async signOut() {
         if (!supabase) return
         const { error } = await supabase.auth.signOut()
+        clearAllLocalUserData()
         if (error) throw error
       },
     }),

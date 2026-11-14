@@ -77,23 +77,54 @@ function normalize(text) {
   return (text || '').toLowerCase().trim()
 }
 
+function tokenizeBranch(branch) {
+  return normalize(branch)
+    .replace(/[^a-z0-9+/# ]+/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean)
+}
+
 function branchMatchScore(branch, keywords) {
   const value = normalize(branch)
   if (!value || !keywords?.length) return 0
 
-  const hits = keywords.filter(keyword => value.includes(keyword))
-  if (hits.length === 0) return 0
-  if (hits.length >= 2) return 10
-  return 6
+  const tokens = new Set(tokenizeBranch(branch))
+  let hits = 0
+
+  for (const keyword of keywords) {
+    const key = normalize(keyword)
+    if (!key) continue
+
+    if (key.includes(' ')) {
+      // Multi-word keywords matched as phrases
+      if (value.includes(key)) hits += 1
+      continue
+    }
+
+    // Prefer whole-token matches to avoid "cs" hitting random substrings
+    if (tokens.has(key)) {
+      hits += 1
+      continue
+    }
+
+    // Allow short abbreviations only as standalone tokens already handled above
+    if (key.length >= 4 && value.includes(key)) {
+      hits += 1
+    }
+  }
+
+  if (hits === 0) return 0
+  if (hits >= 2) return 8
+  return 5
 }
 
 function yearBoost(year) {
   const value = normalize(year)
   if (value.includes('3') || value.includes('4') || value.includes('graduate')) {
-    return 4
+    return 3
   }
   if (value.includes('2')) {
-    return 2
+    return 1
   }
   return 0
 }
@@ -204,14 +235,15 @@ export function generateRecommendations(student) {
         ? 0
         : (matchedInterests.length / career.interests.length) * 35
 
-    const preferenceScore = preferenceMatch ? 15 : 0
+    const preferenceScore = preferenceMatch ? 12 : 0
     const branchBoost = branchMatchScore(branch, career.branchKeywords)
     const academicBoost = yearBoost(year)
 
     const rawScore =
       skillScore + interestScore + preferenceScore + branchBoost + academicBoost
 
-    const score = Math.min(100, Math.round(rawScore))
+    // Soft cap so perfect-looking 100s are rarer unless truly strong
+    const score = Math.min(96, Math.round(rawScore))
 
     const advancedNextSkills =
       missingSkills.length === 0 ? career.advancedSkills || [] : []

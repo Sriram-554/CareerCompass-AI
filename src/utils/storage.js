@@ -32,6 +32,14 @@ export function saveProgress(progressByCareer) {
   }
 }
 
+export function clearProgress() {
+  try {
+    localStorage.removeItem(PROGRESS_KEY)
+  } catch (error) {
+    console.error('Unable to clear learning progress:', error)
+  }
+}
+
 export function loadProfile() {
   try {
     const saved = localStorage.getItem(PROFILE_KEY)
@@ -52,6 +60,8 @@ export function loadProfile() {
         skills: Array.isArray(formData.skills) ? formData.skills : [],
         interests: Array.isArray(formData.interests) ? formData.interests : [],
         preference: formData.preference || '',
+        collegeCode: formData.collegeCode || '',
+        collegeName: formData.collegeName || '',
       },
       savedAt: parsed.savedAt || null,
     }
@@ -80,6 +90,24 @@ export function clearProfile() {
   } catch (error) {
     console.error('Unable to clear assessment profile:', error)
   }
+}
+
+export function clearAllLocalUserData() {
+  clearProfile()
+  clearProgress()
+}
+
+export function mergeProgress(localProgress = {}, cloudProgress = {}) {
+  const merged = { ...localProgress }
+
+  for (const [career, cloudTopics] of Object.entries(cloudProgress || {})) {
+    const localTopics = merged[career] || []
+    merged[career] = Array.from(
+      new Set([...(localTopics || []), ...(cloudTopics || [])])
+    )
+  }
+
+  return merged
 }
 
 export function exportRoadmapChecklist(roadmap, completedTopics = []) {
