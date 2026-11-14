@@ -2,6 +2,7 @@ const careerPaths = [
   {
     title: 'Machine Learning Engineer',
     skills: ['Python', 'Machine Learning', 'SQL'],
+    advancedSkills: ['Deep Learning', 'MLOps', 'Model Deployment', 'Feature Engineering'],
     interests: ['Artificial Intelligence', 'Data Science'],
     preference: 'AI and Machine Learning',
     branchKeywords: ['ai', 'ml', 'machine learning', 'data science', 'cse', 'cs', 'computer'],
@@ -10,6 +11,7 @@ const careerPaths = [
   {
     title: 'Web Developer',
     skills: ['HTML/CSS', 'JavaScript', 'React'],
+    advancedSkills: ['TypeScript', 'Node.js', 'Testing', 'System Design'],
     interests: ['Web Development'],
     preference: 'Software Development',
     branchKeywords: ['cse', 'cs', 'it', 'computer', 'software', 'information'],
@@ -18,6 +20,7 @@ const careerPaths = [
   {
     title: 'Data Analyst',
     skills: ['Python', 'SQL', 'Excel'],
+    advancedSkills: ['Statistics', 'Dashboarding', 'Business Storytelling', 'A/B Testing'],
     interests: ['Data Science'],
     preference: 'Data Science',
     branchKeywords: ['data', 'statistics', 'math', 'analytics', 'cse', 'cs'],
@@ -26,6 +29,7 @@ const careerPaths = [
   {
     title: 'Cybersecurity Analyst',
     skills: ['Python', 'Networking', 'Linux'],
+    advancedSkills: ['Threat Analysis', 'SIEM', 'Cloud Security', 'Incident Response'],
     interests: ['Cybersecurity'],
     preference: 'Cybersecurity',
     branchKeywords: ['cyber', 'security', 'network', 'cse', 'it'],
@@ -34,6 +38,7 @@ const careerPaths = [
   {
     title: 'Cloud Engineer',
     skills: ['Python', 'Linux', 'Docker'],
+    advancedSkills: ['Kubernetes', 'Infrastructure as Code', 'Observability', 'Cost Optimization'],
     interests: ['Cloud Computing'],
     preference: 'Software Development',
     branchKeywords: ['cloud', 'devops', 'cse', 'it', 'computer'],
@@ -42,6 +47,7 @@ const careerPaths = [
   {
     title: 'DevOps Engineer',
     skills: ['Linux', 'Docker', 'Python'],
+    advancedSkills: ['CI/CD', 'Kubernetes', 'Monitoring', 'Infrastructure as Code'],
     interests: ['DevOps', 'Cloud Computing'],
     preference: 'Software Development',
     branchKeywords: ['devops', 'cloud', 'sre', 'cse', 'it', 'computer'],
@@ -50,6 +56,7 @@ const careerPaths = [
   {
     title: 'Mobile App Developer',
     skills: ['Java', 'Kotlin', 'JavaScript'],
+    advancedSkills: ['Jetpack Compose', 'App Architecture', 'Performance', 'Play Store Release'],
     interests: ['App Development'],
     preference: 'Software Development',
     branchKeywords: ['mobile', 'android', 'cse', 'cs', 'it'],
@@ -58,6 +65,7 @@ const careerPaths = [
   {
     title: 'Research Scientist',
     skills: ['Python', 'Machine Learning', 'Mathematics'],
+    advancedSkills: ['Paper Writing', 'Experiment Design', 'Literature Review', 'Reproducibility'],
     interests: ['Artificial Intelligence', 'Data Science'],
     preference: 'Research and Higher Studies',
     branchKeywords: ['research', 'ai', 'ml', 'science', 'math', 'physics'],
@@ -118,6 +126,53 @@ function buildWhyMatch({ matchedSkills, matchedInterests, preferenceMatch, branc
   return `Strong fit based on ${parts.join(', ')}, and ${last}.`
 }
 
+export function buildRankingExplanation(recommendations = [], student = {}) {
+  const top = recommendations[0]
+  const second = recommendations[1]
+  if (!top) return ''
+
+  const reasons = []
+
+  if (top.preferenceMatch) {
+    reasons.push(`it matches your preference for ${student.preference}`)
+  }
+  if (top.matchedSkills?.length) {
+    reasons.push(`you already have ${top.matchedSkills.join(', ')}`)
+  }
+  if (top.matchedInterests?.length) {
+    reasons.push(`your interests include ${top.matchedInterests.join(' and ')}`)
+  }
+  if (top.branchBoost > 0 && student.branch) {
+    reasons.push(`your ${student.branch} background supports this path`)
+  }
+
+  let summary =
+    reasons.length > 0
+      ? `${top.title} ranked #1 because ${reasons.slice(0, 3).join('; ')}.`
+      : `${top.title} ranked #1 based on your overall profile fit.`
+
+  if (second) {
+    const gap = top.score - second.score
+    summary += ` It scored ${top.score}% vs ${second.title} at ${second.score}%`
+    if (gap >= 8) {
+      summary += ` — a clear lead.`
+    } else if (gap > 0) {
+      summary += ` — close, so both are worth exploring.`
+    } else {
+      summary += `.`
+    }
+
+    const extraInterests = (student.interests || []).filter(
+      interest => !top.matchedInterests?.includes(interest)
+    )
+    if (extraInterests.length) {
+      summary += ` Your other interests (${extraInterests.join(', ')}) can still become side projects or secondary paths.`
+    }
+  }
+
+  return summary
+}
+
 export function generateRecommendations(student) {
   const studentSkills = student?.skills || []
   const studentInterests = student?.interests || []
@@ -158,6 +213,9 @@ export function generateRecommendations(student) {
 
     const score = Math.min(100, Math.round(rawScore))
 
+    const advancedNextSkills =
+      missingSkills.length === 0 ? career.advancedSkills || [] : []
+
     return {
       title: career.title,
       description: career.description,
@@ -165,6 +223,7 @@ export function generateRecommendations(student) {
       matchedSkills,
       matchedInterests,
       missingSkills,
+      advancedNextSkills,
       preferenceMatch,
       branchBoost,
       whyMatch: buildWhyMatch({

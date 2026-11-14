@@ -2,12 +2,20 @@ function unique(items) {
   return [...new Set(items.filter(Boolean))]
 }
 
+function getNextSkills(career) {
+  if (career.missingSkills?.length) {
+    return career.missingSkills.filter(Boolean)
+  }
+  if (career.advancedNextSkills?.length) {
+    return career.advancedNextSkills.filter(Boolean)
+  }
+  return ['portfolio depth', 'system design', 'interview readiness']
+}
+
 function buildWhyFit(student, career) {
   const parts = []
   if (career.matchedSkills?.length) {
-    parts.push(
-      `you already have ${career.matchedSkills.join(', ')}`
-    )
+    parts.push(`you already have ${career.matchedSkills.join(', ')}`)
   }
   if (career.matchedInterests?.length) {
     parts.push(`your interest in ${career.matchedInterests.join(' and ')}`)
@@ -32,9 +40,10 @@ function buildWhyFit(student, career) {
 }
 
 function buildThirtyDayPlan(student, career) {
-  const missing = career.missingSkills?.length
-    ? career.missingSkills.slice(0, 2)
-    : ['core fundamentals']
+  const nextSkills = getNextSkills(career)
+  const skillOne = nextSkills[0] || 'core fundamentals'
+  const skillTwo = nextSkills[1]
+  const alreadyStrong = !career.missingSkills?.length
   const year = (student.year || '').toLowerCase()
   const intensity =
     year.includes('1') || year.includes('2')
@@ -44,19 +53,31 @@ function buildThirtyDayPlan(student, career) {
   return [
     {
       week: 'Week 1',
-      focus: `Strengthen ${missing[0]}`,
-      actions: [
-        `Study ${missing[0]} for 45–60 minutes daily`,
-        'Take short notes and build 3 tiny practice examples',
-        `Review how ${missing[0]} is used in ${career.title} roles`,
-      ],
+      focus: alreadyStrong
+        ? `Level up ${skillOne}`
+        : `Strengthen ${skillOne}`,
+      actions: alreadyStrong
+        ? [
+            `Study an advanced topic in ${skillOne} for 45–60 minutes daily`,
+            'Rebuild a previous project with better structure and documentation',
+            `Note 3 industry use-cases for ${skillOne} in ${career.title} roles`,
+          ]
+        : [
+            `Study ${skillOne} for 45–60 minutes daily`,
+            'Take short notes and build 3 tiny practice examples',
+            `Review how ${skillOne} is used in ${career.title} roles`,
+          ],
     },
     {
       week: 'Week 2',
-      focus: missing[1] ? `Add ${missing[1]}` : 'Apply fundamentals',
+      focus: skillTwo
+        ? alreadyStrong
+          ? `Go deeper on ${skillTwo}`
+          : `Add ${skillTwo}`
+        : 'Apply what you learned',
       actions: [
-        missing[1]
-          ? `Learn the basics of ${missing[1]} with one guided tutorial`
+        skillTwo
+          ? `Complete one focused tutorial on ${skillTwo}`
           : 'Revisit weak topics from week 1',
         'Build one mini exercise every 2 days',
         'Write a short weekly reflection: what improved, what is still unclear',
@@ -66,7 +87,9 @@ function buildThirtyDayPlan(student, career) {
       week: 'Week 3',
       focus: 'Project start',
       actions: [
-        `Start a beginner ${career.title} project you can finish in 10–14 days`,
+        alreadyStrong
+          ? `Start an intermediate ${career.title} project that shows depth, not just basics`
+          : `Start a beginner ${career.title} project you can finish in 10–14 days`,
         'Break the project into small checkpoints',
         'Share progress with a friend or peer for accountability',
       ],
@@ -75,7 +98,7 @@ function buildThirtyDayPlan(student, career) {
       week: 'Week 4',
       focus: 'Polish and portfolio',
       actions: [
-        'Finish the mini project and document it on GitHub',
+        'Finish the project and document it on GitHub',
         'Write a 5-line summary of the problem, approach, and result',
         `Plan the next roadmap stage for ${career.title} and ${intensity}`,
       ],
@@ -137,19 +160,20 @@ function buildProjects(career) {
 export function generateCoachPlan(student, career) {
   if (!career) return null
 
+  const nextSkills = getNextSkills(career)
+
   return {
     careerTitle: career.title,
     headline: `Your personalized plan for ${career.title}`,
     whyFit: buildWhyFit(student, career),
     focusSkills: unique([
-      ...(career.missingSkills || []).slice(0, 3),
+      ...nextSkills.slice(0, 3),
       ...(career.matchedSkills || []).slice(0, 2),
     ]).slice(0, 4),
     thirtyDayPlan: buildThirtyDayPlan(student, career),
     projects: buildProjects(career),
-    nextMove:
-      (career.missingSkills && career.missingSkills[0]) ||
-      'the first stage of your roadmap',
+    nextMove: nextSkills[0] || 'the first stage of your roadmap',
+    source: 'guided',
   }
 }
 
