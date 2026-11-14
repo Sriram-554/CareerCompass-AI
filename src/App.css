@@ -1,10 +1,10 @@
-
 * {
   box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -12,6 +12,7 @@ body {
   font-family: Inter, 'Segoe UI', Arial, sans-serif;
   background: #080d19;
   color: #f5f7ff;
+  overflow-x: hidden;
 }
 
 a {
@@ -19,30 +20,41 @@ a {
   color: inherit;
 }
 
+button,
+input,
+select {
+  font: inherit;
+}
+
 .website {
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .navbar {
-  height: 82px;
-  padding: 0 8%;
+  min-height: 72px;
+  padding: 12px 6%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
   background: #080d19;
+  position: sticky;
+  top: 0;
+  z-index: 40;
 }
 
 .logo {
-  font-size: 23px;
+  font-size: 20px;
   font-weight: 800;
   letter-spacing: -1px;
+  white-space: nowrap;
 }
 
 .logo-icon {
   color: #a78bfa;
   margin-right: 9px;
-  font-size: 27px;
+  font-size: 24px;
 }
 
 .ai {
@@ -52,7 +64,7 @@ a {
 
 .nav-links {
   display: flex;
-  gap: 36px;
+  gap: 28px;
   color: #aab2c5;
   font-size: 14px;
 }
@@ -64,18 +76,20 @@ a {
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
 .auth-nav-button {
   background: transparent;
   border: 1px solid #333b50;
   color: #f5f7ff;
-  padding: 12px 16px;
+  padding: 12px 14px;
   border-radius: 9px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  min-height: 44px;
 }
 
 .auth-nav-button:hover {
@@ -86,15 +100,17 @@ a {
 .primary-button {
   background: linear-gradient(120deg, #7c3aed, #5b5ce2);
   color: white;
-  padding: 14px 22px;
+  padding: 12px 16px;
   border-radius: 9px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   display: inline-flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
+  justify-content: center;
   border: none;
   cursor: pointer;
+  min-height: 44px;
 }
 
 .nav-button:hover,
@@ -104,12 +120,12 @@ a {
 }
 
 .hero {
-  min-height: 620px;
-  padding: 100px 10%;
+  min-height: auto;
+  padding: 72px 8%;
   display: grid;
   grid-template-columns: 1.15fr 0.85fr;
   align-items: center;
-  gap: 50px;
+  gap: 40px;
   background:
     radial-gradient(ellipse at 80% 45%, rgba(91,92,226,0.16), transparent 45%),
     #080d19;
@@ -126,10 +142,10 @@ a {
 }
 
 .hero h1 {
-  font-size: clamp(42px, 5vw, 65px);
-  line-height: 1.13;
-  letter-spacing: -3px;
-  margin: 27px 0 20px;
+  font-size: clamp(34px, 7vw, 65px);
+  line-height: 1.12;
+  letter-spacing: -2px;
+  margin: 22px 0 18px;
 }
 
 .hero h1 span {
@@ -138,24 +154,27 @@ a {
 
 .hero-description {
   color: #aab2c5;
-  font-size: 16px;
-  line-height: 1.9;
+  font-size: 15px;
+  line-height: 1.8;
   max-width: 570px;
 }
 
 .hero-actions {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   flex-wrap: wrap;
-  margin-top: 32px;
+  margin-top: 28px;
 }
 
 .secondary-button {
-  padding: 14px 20px;
+  padding: 12px 16px;
   border: 1px solid #333b50;
   border-radius: 9px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .secondary-button:hover {
@@ -165,10 +184,10 @@ a {
 .hero-trust {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 14px;
   color: #aab2c5;
   font-size: 12px;
-  margin-top: 35px;
+  margin-top: 28px;
 }
 
 .hero-trust span::first-letter {
@@ -201,8 +220,8 @@ a {
 
 .central-card {
   z-index: 2;
-  width: 260px;
-  padding: 35px 20px;
+  width: min(260px, 70vw);
+  padding: 28px 18px;
   text-align: center;
   border: 1px solid rgba(167,139,250,0.35);
   border-radius: 22px;
@@ -211,12 +230,12 @@ a {
 }
 
 .central-icon {
-  font-size: 48px;
+  font-size: 42px;
   color: #a78bfa;
 }
 
 .central-card h3 {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .central-card p {
@@ -229,7 +248,7 @@ a {
   flex-wrap: wrap;
   justify-content: center;
   gap: 7px;
-  margin-top: 22px;
+  margin-top: 18px;
 }
 
 .career-tags span {
@@ -245,7 +264,7 @@ a {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 13px 16px;
+  padding: 12px 14px;
   background: #171f35;
   border: 1px solid #303954;
   border-radius: 12px;
@@ -254,7 +273,7 @@ a {
 }
 
 .floating-card > span {
-  font-size: 25px;
+  font-size: 22px;
 }
 
 .floating-card strong,
@@ -284,7 +303,7 @@ a {
 
 .features-section,
 .how-section {
-  padding: 90px 10%;
+  padding: 72px 8%;
 }
 
 .features-section {
@@ -294,7 +313,7 @@ a {
 .section-heading {
   text-align: center;
   max-width: 650px;
-  margin: 0 auto 50px;
+  margin: 0 auto 40px;
 }
 
 .section-label {
@@ -306,8 +325,8 @@ a {
 
 .section-heading h2,
 .assessment-section h2 {
-  font-size: 36px;
-  letter-spacing: -1.2px;
+  font-size: clamp(26px, 5vw, 36px);
+  letter-spacing: -1px;
   margin: 16px 0;
 }
 
@@ -321,16 +340,16 @@ a {
 .features-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 16px;
 }
 
 .feature-card {
   position: relative;
-  padding: 27px 22px;
+  padding: 24px 20px;
   border: 1px solid #273149;
   background: #111a2c;
   border-radius: 15px;
-  min-height: 220px;
+  min-height: 200px;
   transition: 0.25s;
 }
 
@@ -340,8 +359,8 @@ a {
 }
 
 .feature-icon {
-  font-size: 30px;
-  margin-bottom: 20px;
+  font-size: 28px;
+  margin-bottom: 16px;
 }
 
 .feature-card h3 {
@@ -369,11 +388,11 @@ a {
 .steps-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
+  gap: 18px;
 }
 
 .step-card {
-  padding: 30px;
+  padding: 24px;
   border-left: 2px solid #8b5cf6;
   background: #111a2c;
   border-radius: 5px 15px 15px 5px;
@@ -381,17 +400,17 @@ a {
 
 .step-number {
   color: #a78bfa;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
 }
 
 .step-card h3 {
-  margin-top: 25px;
+  margin-top: 18px;
 }
 
 .assessment-section {
-  margin: 30px 10% 80px;
-  padding: 65px 30px;
+  margin: 24px 6% 60px;
+  padding: 48px 24px;
   text-align: center;
   border: 1px solid rgba(167,139,250,0.25);
   border-radius: 20px;
@@ -400,16 +419,16 @@ a {
 
 .assessment-section p {
   max-width: 550px;
-  margin: 0 auto 28px;
+  margin: 0 auto 24px;
 }
 
 .footer {
-  padding: 35px 10%;
+  padding: 28px 6%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 15px;
+  gap: 14px;
   border-top: 1px solid #273149;
   background: #080d19;
 }
@@ -423,74 +442,123 @@ a {
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;
-    padding: 75px 7%;
+    padding: 56px 6% 40px;
   }
 
   .hero-visual {
-    min-height: 360px;
+    min-height: 300px;
+    height: 320px;
+    order: -1;
   }
 
   .features-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 640px) {
   .navbar {
-    padding: 0 5%;
-    height: 70px;
+    padding: 10px 4%;
+    min-height: 64px;
   }
 
   .logo {
-    font-size: 19px;
+    font-size: 17px;
+  }
+
+  .logo-icon {
+    font-size: 20px;
+    margin-right: 6px;
   }
 
   .nav-links {
     display: none;
   }
 
+  .nav-actions {
+    gap: 6px;
+  }
+
   .nav-button,
-  .auth-nav-button {
-    padding: 11px;
+  .auth-nav-button,
+  .primary-button,
+  .secondary-button {
+    padding: 10px 12px;
     font-size: 12px;
+    min-height: 42px;
   }
 
   .hero {
-    padding: 65px 6%;
+    padding: 36px 5% 28px;
+    gap: 18px;
   }
 
   .hero h1 {
-    font-size: 43px;
-    letter-spacing: -2px;
+    font-size: 32px;
+    letter-spacing: -1.5px;
+    margin: 16px 0 12px;
+  }
+
+  .hero-description {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .hero-actions .primary-button,
+  .hero-actions .secondary-button {
+    width: 100%;
+    justify-content: center;
   }
 
   .hero-visual {
-    transform: scale(0.85);
-    margin: -20px -25px;
+    height: 260px;
+    min-height: 260px;
+    margin: 0;
+  }
+
+  .orbit-one {
+    width: 230px;
+    height: 230px;
+  }
+
+  .orbit-two {
+    width: 170px;
+    height: 170px;
+  }
+
+  .floating-card {
+    display: none;
   }
 
   .features-section,
   .how-section {
-    padding: 65px 6%;
+    padding: 48px 5%;
   }
 
-  .section-heading h2,
-  .assessment-section h2 {
-    font-size: 28px;
-  }
-
-  .features-grid,
-  .steps-grid {
+  .features-grid {
     grid-template-columns: 1fr;
   }
 
+  .feature-card {
+    min-height: auto;
+  }
+
   .assessment-section {
-    margin: 20px 5% 50px;
-    padding: 45px 20px;
+    margin: 12px 4% 36px;
+    padding: 32px 16px;
   }
 
   .footer {
-    padding: 30px 6%;
+    padding: 24px 5%;
     flex-direction: column;
     align-items: flex-start;
   }
